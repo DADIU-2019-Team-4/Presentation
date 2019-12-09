@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: DIssolveMaterial
-  m_Shader: {fileID: 4800000, guid: 3871ff22d2661954b83bb2fe278a94d3, type: 3}
+  m_Name: SO_burn
+  m_Shader: {fileID: 4800000, guid: c987150e77e2c634693db721ecb54cfc, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -24,7 +24,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BurntTexture:
-        m_Texture: {fileID: 2800000, guid: ff2bbc384ac83a145b68c0be69edf060, type: 3}
+        m_Texture: {fileID: 2800000, guid: 7130c16fd8005b546b111d341310a9a4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DisolveGuide:
-        m_Texture: {fileID: 2800000, guid: 2c168e41ff93fbd4789caaf556e4d129, type: 3}
+        m_Texture: {fileID: 2800000, guid: ccecf229c002dad4ea9f34ada220482e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 18679e82f6526764f801c96b3e6d7286, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -64,15 +64,23 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Redglownoise:
-        m_Texture: {fileID: 2800000, guid: 53ccc3e4a9a3e1040978f84d1ebb3d58, type: 3}
+        m_Texture: {fileID: 2800000, guid: cd460ee4ac5c1e746b7a734cc7cc64dd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample1:
+        m_Texture: {fileID: 2800000, guid: 12d69b5f15c99294c977c7917975f7f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _burnramp:
-        m_Texture: {fileID: 2800000, guid: 9234b44627492a449a9ba90c68fdf62f, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9398362bc1996374e8cf9b36baf03af3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _maintexture:
-        m_Texture: {fileID: 2800000, guid: 0a065e6b7f491694ba61e5481b561acc, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6ea07506fea63454b98462e106811e88, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _noise:
+        m_Texture: {fileID: 2800000, guid: 59748f6a52c8eab4bafa64cebf3d48af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -81,13 +89,15 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
-    - _BurnGlow: 0.646
+    - _BurnGlow: 0.987
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DissolveAmount: 0
+    - _DissolveAmount: 1
     - _DstBlend: 0
     - _Float3: 2.23
+    - _Float4: 0.57
     - _Float5: 0.48
+    - _Float7: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -99,13 +109,18 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _T: 0
+    - _TimeSpread: -0.98
     - _UVSec: 0
     - _ZWrite: 1
-    - __dirty: 1
+    - __dirty: 0
     m_Colors:
-    - _BurntColor: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 0}
+    - _BurntColor: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color0: {r: 43.67059, g: 47.937256, b: 16.564707, a: 0}
-    - _Colorgradient: {r: 0.34509805, g: 0.34117648, b: 0.39607844, a: 0}
-    - _DissolveBoost: {r: 1.7194837, g: 0.49513927, b: 0.17104812, a: 0}
+    - _Color0: {r: 43.67059, g: 47.93726, b: 16.31373, a: 0}
+    - _Color3: {r: 0.8588235, g: 0.2470588, b: 0.08627451, a: 0}
+    - _Color4: {r: 5.458824, g: 5.992157, b: 0.6901961, a: 0}
+    - _Colorgradient: {r: 0.3448052, g: 0.3420256, b: 0.3962264, a: 0}
+    - _DissolveBoost: {r: 1.7195852, g: 0.49384034, b: 0.17033626, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _StartPoint: {r: 0, g: 0, b: 0, a: 0}
