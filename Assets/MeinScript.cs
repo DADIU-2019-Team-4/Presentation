@@ -5,16 +5,24 @@ using UnityEngine.Video;
 
 public class MeinScript : MonoBehaviour
 {
-    public Sprite[] Presentation;
-    private SpriteRenderer spriteRenderer;
-    private VideoPlayer videoPlayer;
+    public float BurnDuration = 1.0f;
 
-    private int index = 0;
+    public Sprite[] Presentation;
+    public GameObject[] Slide;
+    private int _currentSlide;
+    private int _nextSlide;
+    private SpriteRenderer[] spriteRenderer;
+    private VideoPlayer videoPlayer;
+    private int index = 1;
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentsInChildren<SpriteRenderer>();
         videoPlayer = Camera.main.GetComponent<VideoPlayer>();
+        _currentSlide = 0;
+        _nextSlide = 1;
+        for (int i = 0; i <= spriteRenderer.Length - 1; i++)
+            spriteRenderer[i].sprite = Presentation[i];
     }
 
     private void Update()
@@ -27,18 +35,36 @@ public class MeinScript : MonoBehaviour
     {
         if (videoPlayer.isPlaying)
             videoPlayer.Stop();
-        if (leftClick)
-            index++;
-        else
-            index--;
-        spriteRenderer.sprite = Presentation[index];
-
-        if (spriteRenderer.sprite.name == "VIDEO")
-            PlayVideo();
+        StartCoroutine(Dissolve(spriteRenderer[_currentSlide].material, leftClick));
     }
 
     private void PlayVideo()
     {
         videoPlayer.Play();
+    }
+
+    IEnumerator Dissolve(Material material, bool click)
+    {
+
+        for (float timer = 0; timer < BurnDuration; timer += Time.unscaledDeltaTime)
+        {
+            material.SetFloat("_DissolveAmount", Mathf.Lerp(0, 1f, timer / BurnDuration));
+            yield return null;
+        }
+        if (click)
+            index++;
+        else
+            index--;
+        var temp = Slide[_nextSlide].transform.position;
+        Slide[_nextSlide].transform.position = Slide[_currentSlide].transform.position;
+        Slide[_currentSlide].transform.position = temp;
+        var tempNumb = _nextSlide;
+        _nextSlide = _currentSlide;
+        _currentSlide = tempNumb;
+        spriteRenderer[_nextSlide].sprite = Presentation[index];
+        spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
+        material.SetFloat("_DissolveAmount", 0);
+        if (spriteRenderer[_currentSlide].sprite.name == "VIDEO")
+            PlayVideo();
     }
 }
