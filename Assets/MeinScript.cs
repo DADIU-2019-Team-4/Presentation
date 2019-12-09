@@ -17,12 +17,20 @@ public class MeinScript : MonoBehaviour
         videoPlayer = Camera.main.GetComponent<VideoPlayer>();
     }
 
-    private void OnMouseDown()
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+            OnClick(Input.GetMouseButton(0));
+    }
+
+    void OnClick(bool leftClick)
     {
         if (videoPlayer.isPlaying)
             videoPlayer.Stop();
-
-        index++;
+        if (leftClick)
+            index++;
+        else
+            index--;
         spriteRenderer.sprite = Presentation[index];
 
         if (spriteRenderer.sprite.name == "VIDEO")
