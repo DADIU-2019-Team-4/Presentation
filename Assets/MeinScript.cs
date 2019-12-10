@@ -88,7 +88,7 @@ public class MeinScript : MonoBehaviour
 
         for (float timer = 0; timer < BurnDuration; timer += Time.unscaledDeltaTime)
         {
-            material.SetFloat("_DissolveAmount", Mathf.Lerp(0, 1f, timer / BurnDuration));
+            material.SetFloat("_DissolveAmount", Mathf.Lerp(1f, 0f, timer / BurnDuration));
             yield return null;
         }
 
