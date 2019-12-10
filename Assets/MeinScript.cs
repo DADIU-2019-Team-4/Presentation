@@ -7,7 +7,7 @@ public class MeinScript : MonoBehaviour
 {
     public float BurnDuration = 1.0f;
 
-    public Sprite[] Presentation;
+    public Object[] Presentation;
     public GameObject[] Slide;
 
     private SpriteRenderer[] spriteRenderer;
@@ -20,14 +20,30 @@ public class MeinScript : MonoBehaviour
 
     private void Awake()
     {
-        spriteRenderer = GetComponentsInChildren<SpriteRenderer>();
         videoPlayer = Camera.main.GetComponent<VideoPlayer>();
+
+        spriteRenderer = GetComponentsInChildren<SpriteRenderer>();
         _fireDissolveSFX = GetComponent<AudioSource>();
         _currentSlide = 0;
         _nextSlide = 1;
-        for (int i = 0; i <= spriteRenderer.Length - 1; i++)
-            spriteRenderer[i].sprite = Presentation[i];
+
+        if (Presentation[0] is Texture2D)
+            spriteRenderer[0].sprite = TextureToSprite(Presentation[0] as Texture2D);
+        if (Presentation[1] is Texture2D)
+            spriteRenderer[1].sprite = TextureToSprite(Presentation[1] as Texture2D);
     }
+
+    private void Start()
+    {
+        if (Presentation[0] is VideoClip)
+        {
+            videoPlayer.clip = (Presentation[0] as VideoClip);
+            videoPlayer.Play();
+            SetSlidesActive(false);
+        }
+    }
+
+    private Sprite TextureToSprite(Texture2D texture2D) { return Sprite.Create(texture2D, new Rect(0, 0, texture2D.width, texture2D.height), new Vector2(0.5f, 0.5f)); }
 
     private void Update()
     {
@@ -42,31 +58,33 @@ public class MeinScript : MonoBehaviour
 
     void TransitionSlide(bool leftClick)
     {
-        // here burn
-        if (spriteRenderer[_currentSlide].sprite.name != "VIDEO")
-        {
-            // PLAY AUDIO
+        if (Presentation[index] is Texture2D)
             _fireDissolveSFX.Play();
-        }
 
         if (videoPlayer.isPlaying)
             videoPlayer.Stop();
+
         SetSlidesActive(true);
         StartCoroutine(Dissolve(spriteRenderer[_currentSlide].material, leftClick));
     }
 
-    private void PlayVideo() { videoPlayer.Play(); }
-
     IEnumerator Dissolve(Material material, bool click)
     {
         if (click)
+        {
             index++;
+
+        }
         else
         {
             index--;
-            spriteRenderer[_nextSlide].sprite = Presentation[index];
-            spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
+            if (Presentation[index] is Texture2D)
+            {
+                spriteRenderer[_nextSlide].sprite = TextureToSprite(Presentation[index] as Texture2D);
+                spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
+            }
         }
+
 
         for (float timer = 0; timer < BurnDuration; timer += Time.unscaledDeltaTime)
         {
@@ -78,16 +96,20 @@ public class MeinScript : MonoBehaviour
 
         SetCurrentSlide(click);
 
-        if (spriteRenderer[_currentSlide].sprite.name == "VIDEO")
+        if (Presentation[index] is VideoClip)
         {
-            yield return null;
-            PlayVideo();
+            videoPlayer.clip = (Presentation[index] as VideoClip);
+            videoPlayer.Play();
             SetSlidesActive(false);
+            yield return null;
         }
 
-        if (!videoPlayer.isPlaying && click)
+        if (Presentation[index + 1] is VideoClip)
+            spriteRenderer[_nextSlide].sprite = null;
+
+        if (click && Presentation[index + 1] is Texture2D)
         {
-            spriteRenderer[_nextSlide].sprite = Presentation[index + 1];
+            spriteRenderer[_nextSlide].sprite = TextureToSprite(Presentation[index + 1] as Texture2D);
             spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
         }
         material.SetFloat("_DissolveAmount", 0);
