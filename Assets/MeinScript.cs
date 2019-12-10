@@ -9,11 +9,14 @@ public class MeinScript : MonoBehaviour
 
     public Sprite[] Presentation;
     public GameObject[] Slide;
-    private int _currentSlide;
-    private int _nextSlide;
+
     private SpriteRenderer[] spriteRenderer;
     private VideoPlayer videoPlayer;
-    private int index = 1;
+
+    [SerializeField]
+    private int index = 0;
+    private int _currentSlide;
+    private int _nextSlide;
 
     private void Awake()
     {
@@ -27,44 +30,86 @@ public class MeinScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-            OnClick(Input.GetMouseButton(0));
+        //if (videoPlayer.isPlaying && Slide[0].activeSelf)
+        //    foreach (GameObject o in Slide)
+        //        o.SetActive(false);
+        //else if (!videoPlayer.isPlaying && !Slide[0].activeSelf)
+        //    foreach (GameObject o in Slide)
+        //        o.SetActive(true);
+
+
+        // Next slide: Left mouse button OR Right arrow
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.RightArrow))
+            TransitionSlide(true);
+
+        // Previous slide: Right mouse button OR Left arrow
+        else if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.LeftArrow))
+            TransitionSlide(false);
     }
 
-    void OnClick(bool leftClick)
+    void TransitionSlide(bool leftClick)
     {
         if (videoPlayer.isPlaying)
             videoPlayer.Stop();
+        SetSlidesActive(true);
         StartCoroutine(Dissolve(spriteRenderer[_currentSlide].material, leftClick));
     }
 
-    private void PlayVideo()
-    {
-        videoPlayer.Play();
-    }
+    private void PlayVideo() { videoPlayer.Play(); }
 
     IEnumerator Dissolve(Material material, bool click)
     {
+        if (click)
+            index++;
+        else
+        {
+            index--;
+            spriteRenderer[_nextSlide].sprite = Presentation[index];
+            spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
+        }
 
         for (float timer = 0; timer < BurnDuration; timer += Time.unscaledDeltaTime)
         {
             material.SetFloat("_DissolveAmount", Mathf.Lerp(0, 1f, timer / BurnDuration));
             yield return null;
         }
-        if (click)
-            index++;
-        else
-            index--;
-        var temp = Slide[_nextSlide].transform.position;
-        Slide[_nextSlide].transform.position = Slide[_currentSlide].transform.position;
-        Slide[_currentSlide].transform.position = temp;
+
+        SwitchPosition();
+
+        SetCurrentSlide(click);
+
+        if (spriteRenderer[_currentSlide].sprite.name == "VIDEO")
+        {
+            yield return null;
+            PlayVideo();
+            SetSlidesActive(false);
+        }
+
+        if (!videoPlayer.isPlaying && click)
+        {
+            spriteRenderer[_nextSlide].sprite = Presentation[index + 1];
+            spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
+        }
+        material.SetFloat("_DissolveAmount", 0);
+    }
+
+    private void SetSlidesActive(bool b)
+    {
+        foreach (GameObject o in Slide)
+            o.SetActive(b);
+    }
+
+    private void SetCurrentSlide(bool click)
+    {
         var tempNumb = _nextSlide;
         _nextSlide = _currentSlide;
         _currentSlide = tempNumb;
-        spriteRenderer[_nextSlide].sprite = Presentation[index];
-        spriteRenderer[_nextSlide].material.SetTexture("_maintexture", spriteRenderer[_nextSlide].sprite.texture);
-        material.SetFloat("_DissolveAmount", 0);
-        if (spriteRenderer[_currentSlide].sprite.name == "VIDEO")
-            PlayVideo();
+    }
+
+    private void SwitchPosition()
+    {
+        var temp = Slide[_nextSlide].transform.position;
+        Slide[_nextSlide].transform.position = Slide[_currentSlide].transform.position;
+        Slide[_currentSlide].transform.position = temp;
     }
 }
