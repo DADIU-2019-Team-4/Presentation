@@ -13,15 +13,16 @@ public class MeinScript : MonoBehaviour
     private SpriteRenderer[] spriteRenderer;
     private VideoPlayer videoPlayer;
 
-    [SerializeField]
     private int index = 0;
     private int _currentSlide;
     private int _nextSlide;
+    private AudioSource _fireDissolveSFX;
 
     private void Awake()
     {
         spriteRenderer = GetComponentsInChildren<SpriteRenderer>();
         videoPlayer = Camera.main.GetComponent<VideoPlayer>();
+        _fireDissolveSFX = GetComponent<AudioSource>();
         _currentSlide = 0;
         _nextSlide = 1;
         for (int i = 0; i <= spriteRenderer.Length - 1; i++)
@@ -30,14 +31,6 @@ public class MeinScript : MonoBehaviour
 
     private void Update()
     {
-        //if (videoPlayer.isPlaying && Slide[0].activeSelf)
-        //    foreach (GameObject o in Slide)
-        //        o.SetActive(false);
-        //else if (!videoPlayer.isPlaying && !Slide[0].activeSelf)
-        //    foreach (GameObject o in Slide)
-        //        o.SetActive(true);
-
-
         // Next slide: Left mouse button OR Right arrow
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.RightArrow))
             TransitionSlide(true);
@@ -49,6 +42,13 @@ public class MeinScript : MonoBehaviour
 
     void TransitionSlide(bool leftClick)
     {
+        // here burn
+        if (spriteRenderer[_currentSlide].sprite.name != "VIDEO")
+        {
+            // PLAY AUDIO
+            _fireDissolveSFX.Play();
+        }
+
         if (videoPlayer.isPlaying)
             videoPlayer.Stop();
         SetSlidesActive(true);
