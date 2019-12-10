@@ -373,6 +373,7 @@ MonoBehaviour:
   Slide:
   - {fileID: 1777353787}
   - {fileID: 510572778}
+  index: 0
 --- !u!4 &1183762919
 Transform:
   m_ObjectHideFlags: 0
